@@ -15,4 +15,5 @@ async def get_voice_text(file_path: str):
                 return f"Ошибка сервера Whisper: {response.status_code}", False
         
     except Exception as e:
+        print(f"!!! КРИТИЧЕСКАЯ ОШИБКА HTTPX: {type(e).__name__} -> {e}")
         return "Произошла ошибка при обработке аудио.", False

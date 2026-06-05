@@ -31,7 +31,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 600M
+          memory: 700M
 
 volumes:
   shared-voices:
