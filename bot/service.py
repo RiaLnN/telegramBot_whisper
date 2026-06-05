@@ -7,7 +7,7 @@ async def get_voice_text(file_path: str):
             response = await client.post(
                 url=settings.WHISPER_URL, 
                 json={'file_path': file_path},
-                timeout=60.0 
+                timeout=120.0 
             )
             if response.status_code == 200:
                 return response.json().get("text", "Не удалось распознать текст."), True

@@ -1,10 +1,10 @@
 from faster_whisper import WhisperModel
 
 model = WhisperModel(
-    model_size_or_path='base',
+    model_size_or_path='tiny',
     device='cpu',
     compute_type='int8',
-    cpu_threads=2
+    cpu_threads=1
 )
 
 def transcribe_audio(file_path: str) -> str:
