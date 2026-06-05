@@ -29,7 +29,7 @@ async def voice_handle(message: Message, bot: Bot):
 
             await status_message.edit_text(f"**Результат:**\n\n{final_text}", parse_mode="Markdown")
         else:
-            await status_message.edit_text("Не удалось распознать речь.")
+            await status_message.edit_text(recognized_text)
             
         if os.path.exists(local_path):
             os.remove(local_path)
