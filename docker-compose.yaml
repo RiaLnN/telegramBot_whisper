@@ -1,0 +1,32 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: bot/Dockerfile
+    restart: always
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      WHISPER_URL: http://whisper:8000/transcribe
+      HF_TOKEN: ${HF_TOKEN}
+      API_URL: ${API_URL}
+    volumes:
+      - shared-voices:/app/voices
+    depends_on:
+      whisper:
+        condition: service_started
+
+  whisper:
+    build:
+      context: .
+      dockerfile: whisper/Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - shared-voices:/app/voices
+
+volumes:
+  shared-voices:
