@@ -1,5 +1,5 @@
 import httpx
-from config import settings
+from bot.config import settings
 
 
 async def get_voice_text(file_path: str) -> str:
@@ -25,9 +25,9 @@ async def get_voice_text(file_path: str) -> str:
             
             if response.status_code == 200:
                 text = response.json().get("text", "").strip()
-                return text
+                return text if text else "The audio is empty or no speech was recognized."
             else:
-                return f"Ошибка облачного STT: {response.status_code}"
+                return f"Cloud STT Error: Server returned status code {response.status_code}"
                     
     except Exception as e:
-        return "Произошла ошибка при отправке аудио в облако."
+        return "An error occurred while sending the audio to the cloud service."

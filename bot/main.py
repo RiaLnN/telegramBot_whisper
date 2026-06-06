@@ -1,6 +1,6 @@
 import asyncio
-from loader import bot, dp
-from handlers import router
+from bot.loader import bot, dp
+from bot.handlers import router
 import logging
 
 async def start_bot():

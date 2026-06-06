@@ -10,6 +10,8 @@ services:
       BOT_TOKEN: ${BOT_TOKEN}
       GROQ_API_KEY: ${GROQ_API_KEY}
       GROQ_AUDIO_URL: ${GROQ_AUDIO_URL}
+      LLAMA_API_KEY: ${LLAMA_API_KEY}
+      LLAMA_URL: ${LLAMA_URL}
     volumes:
       - shared-voices:/app/voices
 

@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher
-from config import settings
+from bot.config import settings
 from aiogram.client.default import DefaultBotProperties
 
 bot = Bot(
