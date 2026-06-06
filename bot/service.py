@@ -1,19 +1,34 @@
 import httpx
 from config import settings
 
-async def get_voice_text(file_path: str):
+
+async def get_voice_text(file_path: str) -> str:
+    headers = {
+        "Authorization": f"Bearer {settings.GROQ_API_KEY}"
+    }
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.post(
-                url=settings.WHISPER_URL, 
-                json={'file_path': file_path},
-                timeout=120.0 
-            )
+            with open(file_path, "rb") as audio_file:
+                files = {"file": (file_path.split("/")[-1], audio_file, "audio/ogg")}
+                data = {
+                    "model": "whisper-large-v3",
+                    "language": "ru",
+                    "response_format": "json"
+                }
+                
+                response = await client.post(
+                    settings.GROQ_AUDIO_URL, 
+                    headers=headers, 
+                    files=files, 
+                    data=data, 
+                    timeout=30.0
+                )
+            
             if response.status_code == 200:
-                return response.json().get("text", "Не удалось распознать текст."), True
+                text = response.json().get("text", "").strip()
+                return text
             else:
-                return f"Ошибка сервера Whisper: {response.status_code}", False
-        
+                return f"Ошибка облачного STT: {response.status_code}"
+                    
     except Exception as e:
-        print(f"!!! КРИТИЧЕСКАЯ ОШИБКА HTTPX: {type(e).__name__} -> {e}")
-        return "Произошла ошибка при обработке аудио.", False
+        return "Произошла ошибка при отправке аудио в облако."

@@ -2,9 +2,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class BotSettings(BaseSettings):
     BOT_TOKEN: str = ''
-    WHISPER_URL: str = ''
-    HF_TOKEN: str = ''
-    API_URL: str = ''
+    GROQ_API_KEY: str = ''
+    GROQ_AUDIO_URL: str = ''
 
     model_config = SettingsConfigDict(
         env_file='.env',
