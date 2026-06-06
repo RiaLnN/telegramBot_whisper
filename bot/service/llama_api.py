@@ -7,7 +7,7 @@ HEADERS = {
 
 async def summarize_text(raw_text: str) -> str:
     if not raw_text or len(raw_text.strip()) < 10:
-        return "Текст слишком короткий для суммаризации."
+        return "The text is too short for summarization."
 
     system_prompt = (
         "You are an expert text analyst. Your task is to create an ultra-concise, "
