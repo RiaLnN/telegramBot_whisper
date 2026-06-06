@@ -12,7 +12,6 @@ async def get_voice_text(file_path: str) -> str:
                 files = {"file": (file_path.split("/")[-1], audio_file, "audio/ogg")}
                 data = {
                     "model": "whisper-large-v3",
-                    "language": "ru",
                     "response_format": "json"
                 }
                 
