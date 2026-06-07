@@ -1,36 +1,21 @@
 import httpx
 from bot.config import settings
+from bot.helpers import get_payload_for_ai
+from bot.constants import AITask
+
 
 HEADERS = {
     "Authorization": f"Bearer {settings.LLAMA_API_KEY}",
 }
 
-async def summarize_text(raw_text: str) -> str:
-    if not raw_text or len(raw_text.strip()) < 10:
-        return "The text is too short for summarization."
 
-    system_prompt = (
-        "You are an expert text analyst. Your task is to create an ultra-concise, "
-        "short summary of the provided text. Highlight only the absolute core points, "
-        "agreements, or action items. Use a standard text bullet-point list (-). "
-        "CRITICAL REQUIREMENTS:\n"
-        "1. DO NOT use any emojis, stickers, or special visual symbols.\n"
-        "2. The length of your summary must be AT LEAST 50% SHORTER than the original text. Cut all details.\n"
-    )
 
-    payload = {
-        "messages": [
-            {
-                'role': 'system',
-                'content': system_prompt
-            },
-            {
-                'role': 'user',
-                'content': raw_text
-            }
-        ],
-        "model": "meta-llama/Llama-3.1-8B-Instruct:novita"
-    }
+
+async def get_ai_answer(raw_text: str, task: AITask) -> str:
+    if not raw_text or (len(raw_text.strip()) < 10 and task.name == 'SUMMARIZE'):
+        return "The text is too short."
+
+    payload = get_payload_for_ai(system_prompt=task.value, user_text=raw_text)
 
     try:
         async with httpx.AsyncClient() as client:
@@ -40,6 +25,6 @@ async def summarize_text(raw_text: str) -> str:
                 result = response.json()
                 return result['choices'][0]['message']['content']
             else:
-                return f"Error: Unable to connect to the summarization server (Status: {response.status_code})."
+                return f"Error: Server returned {response.status_code}"
     except Exception as e:
-        return "An error occurred while generating the summary."
+        return "An error occurred while generating the response."

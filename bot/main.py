@@ -1,11 +1,12 @@
 import asyncio
 from bot.loader import bot, dp
-from bot.handlers import router
+from bot.handlers import reply, voice
 import logging
 
 async def start_bot():
     logging.basicConfig(level=logging.INFO)
-    dp.include_router(router=router)
+    dp.include_router(router=voice.router)
+    dp.include_router(router=reply.router)
 
     await dp.start_polling(bot)
 
