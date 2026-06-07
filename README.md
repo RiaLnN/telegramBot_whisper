@@ -12,7 +12,7 @@ Built with Groq Whisper API + LLaMA API, deployed via Docker.
 
 1. Send a voice message to the bot.
 2. Bot returns transcribed text.
-3. Reply to **bot text message** with one of the command groups:
+3. Reply to **the bot’s transcription message** with one of the command groups:
 
 **Summary commands:**
 `!суть` · `!summary` · `/summary` · `выжимка` · `summary` · `!gist` · `!сенс` · `!коротко`
@@ -43,7 +43,7 @@ git clone https://github.com/RiaLnN/telegramBot_whisper.git
 cd telegramBot_whisper
 ```
 
-2. Create `.env`:
+2. Create a `.env` file:
 ```env
 BOT_TOKEN=your_telegram_bot_token
 
