@@ -1,18 +1,18 @@
 from aiogram import Router, F
 from aiogram.types import Message
-from bot.service.llama_api import get_ai_answer
-from bot.constants import (
+from bot.core.constants import (
     SUMMARIZE_COMMANDS, ANSWER_COMMANDS, 
     MSG_PROCESSING_SUMMARY, MSG_PROCESSING_ANSWER,
     MSG_ERROR_SUMMARY, MSG_ERROR_ANSWER,
 )
-from bot.constants import AITask
+from bot.core.constants import AITask
+from bot.tasks import process_text_task
 
 router = Router()
 
 @router.message(F.text, F.reply_to_message)
 async def commands_handle(message: Message):
-    if not message.text or not message.reply_to_message or not message.reply_to_message.text or not message.bot or not message.reply_to_message.from_user :
+    if not message.text or not message.reply_to_message or not message.reply_to_message.text or not message.bot or not message.reply_to_message.from_user:
         return
     
     command = message.text.lower().strip()
@@ -31,12 +31,6 @@ async def commands_handle(message: Message):
     status_msg = await message.answer(proc_text)
     
     try:
-        result = await get_ai_answer(message.reply_to_message.text, task)
-        
-        if result.startswith("Error:"):
-            await status_msg.edit_text(err_text)
-        else:
-            await status_msg.edit_text(result, parse_mode="Markdown")
-            
+        process_text_task.delay(message.reply_to_message.text, message.chat.id, status_msg.message_id, task)    
     except Exception:
         await status_msg.edit_text(err_text)

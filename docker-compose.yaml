@@ -9,11 +9,28 @@ services:
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
       GROQ_API_KEY: ${GROQ_API_KEY}
-      GROQ_AUDIO_URL: ${GROQ_AUDIO_URL}
       LLAMA_API_KEY: ${LLAMA_API_KEY}
-      LLAMA_URL: ${LLAMA_URL}
     volumes:
-      - shared-voices:/app/voices
+      - shared-voices:/voices
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+  celery:
+      build:
+        context: .
+        dockerfile: bot/Dockerfile
+      command: ["celery", "-A", "bot.tasks", "worker", "--loglevel=INFO", "-P", "solo"]
+      environment:
+        BOT_TOKEN: ${BOT_TOKEN}
+        GROQ_API_KEY: ${GROQ_API_KEY}
+        LLAMA_API_KEY: ${LLAMA_API_KEY}
+      volumes:
+        - shared-voices:/voices
+      depends_on:
+        - redis
+        - bot
+
 
 volumes:
   shared-voices:

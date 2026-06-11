@@ -41,3 +41,19 @@ from enum import Enum
 class AITask(Enum):
     SUMMARIZE = SUMMARIZE_PROMPT
     ANSWER = ANSWER_PROMPT
+
+
+# ai_api
+LLAMA_URL = 'https://router.huggingface.co/v1/chat/completions'
+GROQ_AUDIO_URL = 'https://api.groq.com/openai/v1/audio/transcriptions'
+
+# celery
+BROKER='redis://redis:6379/0'
+
+# message errors
+ERROR_EMPTY_AUDIO = "Failed to recognize speech or the audio file is empty."
+ERROR_EMPTY_AI_RESPONSE = "AI model returned an empty response."
+ERROR_TELEGRAM_API = "An error occurred while formatting or sending the AI response."
+ERROR_TEXT_RENDER = "Error rendering output text."
+
+MAX_MESSAGE_LENGTH = 4096

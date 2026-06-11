@@ -1,6 +1,6 @@
 import httpx
-from bot.config import settings
-
+from bot.core.config import settings
+from bot.core.constants import GROQ_AUDIO_URL
 
 async def get_voice_text(file_path: str) -> str:
     headers = {
@@ -16,7 +16,7 @@ async def get_voice_text(file_path: str) -> str:
                 }
                 
                 response = await client.post(
-                    settings.GROQ_AUDIO_URL, 
+                    GROQ_AUDIO_URL, 
                     headers=headers, 
                     files=files, 
                     data=data, 
@@ -30,4 +30,4 @@ async def get_voice_text(file_path: str) -> str:
                 return f"Cloud STT Error: Server returned status code {response.status_code}"
                     
     except Exception as e:
-        return "An error occurred while sending the audio to the cloud service."
+        return f"An error occurred while sending the audio to the cloud service."
