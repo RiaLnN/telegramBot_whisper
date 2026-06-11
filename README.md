@@ -15,7 +15,7 @@ Telegram bot for:
    - summary command → short summary
    - answer command → ready-to-send reply text
 
-Works with voice messages in different languages.
+Works with voice messages in any language.
 
 ---
 
@@ -55,6 +55,7 @@ BOT_TOKEN=your_telegram_bot_token
 GROQ_API_KEY=your_groq_api_key
 LLAMA_API_KEY=your_llama_api_key
 ```
+`GROQ_AUDIO_URL` and `LLAMA_URL` are already defined inside the bot constants, so they are not required in `.env`.
 
 3. Start services:
 ```bash
