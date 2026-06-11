@@ -31,6 +31,11 @@ async def commands_handle(message: Message):
     status_msg = await message.answer(proc_text)
     
     try:
-        process_text_task.delay(message.reply_to_message.text, message.chat.id, status_msg.message_id, task)    
-    except Exception:
+        process_text_task.delay(
+            raw_text = message.reply_to_message.text, 
+            chat_id = message.chat.id, 
+            message_id = status_msg.message_id, 
+            task_value = task.value
+        )
+    except Exception as e:
         await status_msg.edit_text(err_text)

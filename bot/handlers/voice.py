@@ -18,4 +18,7 @@ async def voice_handle(message: Message, bot: Bot):
         local_path = get_destination_path(file_id)
         await bot.download_file(file_path, local_path)
         
-        process_voice_task.delay(local_path, message.chat.id, status_msg.message_id)
+        process_voice_task.delay(
+            file_path = local_path, 
+            chat_id = message.chat.id, 
+            message_id = status_msg.message_id)

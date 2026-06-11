@@ -50,10 +50,10 @@ def process_voice_task(file_path: str, chat_id: int, message_id: int):
 
 @app.task
 def process_text_task(
-    raw_text: str, chat_id: int, message_id: int, task: AITask
+    raw_text: str, chat_id: int, message_id: int, task_value: str
 ):
     bot = Bot(token=settings.BOT_TOKEN)
-
+    task = AITask(task_value)
     async def run_logic():
         try:
             text = await get_ai_answer(raw_text=raw_text, task=task)
