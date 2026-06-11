@@ -1,63 +1,77 @@
-# voice-to-text-bot
+# telegramBot_whisper
 
-Telegram bot that transcribes voice messages in seconds and optionally summarizes them.
-Built with Groq Whisper API + LLaMA, deployed on Azure via Docker.
+Telegram bot for:
+- voice message transcription (Groq Whisper)
+- concise summary generation
+- reply generation to transcribed text
 
 ---
 
 ## How it works
 
-1. Send any voice message to the bot
-2. Bot instantly returns the transcribed text
-3. Reply to that message with a summary command — bot returns a short summary
+1. Send a voice message to the bot.
+2. Bot returns the recognized text.
+3. Reply to that bot message with one of the commands below:
+   - summary command → short summary
+   - answer command → ready-to-send reply text
 
-**Summary commands:** `!суть` · `!summary` · `/summary` · `выжимка` · `summary` · `!gist`
+Works with voice messages in different languages.
 
-Works with voice messages in any language.
+---
+
+## Commands
+
+### Summary commands
+`!суть` · `!summary` · `/summary` · `выжимка` · `summary` · `!gist` · `!сенс` · `!коротко`
+
+### Answer commands
+`!answer` · `!ответь` · `!reply` · `!відповісти` · `/answer` · `!ответ` · `!відповідь`
 
 ---
 
 ## Stack
 
 - **[aiogram](https://github.com/aiogram/aiogram)** — Telegram bot framework
-- **[Groq](https://groq.com)** — Whisper-based speech-to-text (near-instant transcription)
-- **LLaMA API** — summarization via second LLM call
-- **Docker** — single-container deployment
+- **[Groq](https://groq.com)** — speech-to-text (Whisper)
+- **LLaMA-compatible chat API** — summary/answer generation
+- **Celery + Redis** — background task processing
+- **Docker Compose** — service orchestration
 
 ---
 
-## Running
+## Run locally (Docker)
 
 **Requirements:** Docker, Docker Compose
 
-1. Clone the repository:
+1. Clone repository:
 ```bash
-git clone https://github.com/RiaLnN/voice-to-text-bot.git
-cd voice-to-text-bot
+git clone https://github.com/RiaLnN/telegramBot_whisper.git
+cd telegramBot_whisper
 ```
 
-2. Create a `.env` file:
+2. Create `.env`:
 ```env
 BOT_TOKEN=your_telegram_bot_token
-
 GROQ_API_KEY=your_groq_api_key
-GROQ_AUDIO_URL=https://api.groq.com/openai/v1/audio/transcriptions
-
 LLAMA_API_KEY=your_llama_api_key
-LLAMA_URL=https://...
 ```
 
-3. Start:
+3. Start services:
 ```bash
 docker compose up --build -d
 ```
 
+This starts:
+- `bot` — Telegram polling service
+- `celery` — async worker for transcription and AI responses
+- `redis` — broker for Celery tasks
+
 ---
 
-## Getting API keys
+## API keys
 
 | Key | Where to get |
 |---|---|
-| `BOT_TOKEN` | [@BotFather](https://t.me/BotFather) in Telegram |
-| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) — free tier available |
-| `LLAMA_API_KEY` | depends on your LLaMA provider |
+| `BOT_TOKEN` | [@BotFather](https://t.me/BotFather) |
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) |
+| `LLAMA_API_KEY` | your LLaMA-compatible provider |
