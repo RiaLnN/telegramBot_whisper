@@ -1,5 +1,5 @@
 import os
-
+from bot.core.config import settings
 def get_destination_path(file_id: str):
     if not os.path.exists('voices'):
         os.mkdir("voices")
@@ -18,4 +18,9 @@ def get_payload_for_ai(system_prompt: str, user_text: str):
             }
         ],
         "model": "meta-llama/Llama-3.1-8B-Instruct:novita"
+    }
+
+def get_header_for_ai(api_key: str):
+    return {
+        "Authorization": f"Bearer {api_key}"
     }

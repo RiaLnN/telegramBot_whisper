@@ -2,23 +2,35 @@ from aiogram import Router, F, Bot
 from aiogram.types import Message
 from bot.helpers import get_destination_path
 from bot.tasks import process_voice_task
+from bot.core.constants import MSG_PROCESSING_VOICE, MSG_ERROR_VOICE
+import logging
 
 router = Router()
 
 @router.message(F.voice)
 async def voice_handle(message: Message, bot: Bot):
-    file_id = message.voice.file_id if message.voice else 'N/A'
+    if not message.voice:
+        return
 
-    status_msg = await message.answer("Transcribing voice message...")
+    file_id = message.voice.file_id
+    status_msg = await message.answer(MSG_PROCESSING_VOICE)
 
-    file_info = await bot.get_file(file_id)
-    file_path = file_info.file_path
+    try:
+        file_info = await bot.get_file(file_id)
+        file_path = file_info.file_path
 
-    if file_path:
-        local_path = get_destination_path(file_id)
-        await bot.download_file(file_path, local_path)
-        
-        process_voice_task.delay(
-            file_path = local_path, 
-            chat_id = message.chat.id, 
-            message_id = status_msg.message_id)
+        if file_path:
+            local_path = get_destination_path(file_id)
+            await bot.download_file(file_path, local_path)
+            
+            process_voice_task.delay(
+                file_path=local_path, 
+                chat_id=message.chat.id, 
+                message_id=status_msg.message_id
+            )
+        else:
+            await status_msg.edit_text("Failed to get audio file path.")
+            
+    except Exception as e:
+        logging.error(f"Voice handler error: {e}")
+        await status_msg.edit_text(MSG_ERROR_VOICE)

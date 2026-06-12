@@ -1,4 +1,4 @@
-# voice-to-text-bot
+# TelegramBot_Whisper
 
 Telegram bot that transcribes voice messages in seconds and optionally summarizes them.
 Built with Groq Whisper API + LLaMA, deployed on Azure via Docker.
@@ -39,12 +39,8 @@ cd voice-to-text-bot
 2. Create a `.env` file:
 ```env
 BOT_TOKEN=your_telegram_bot_token
-
 GROQ_API_KEY=your_groq_api_key
-GROQ_AUDIO_URL=https://api.groq.com/openai/v1/audio/transcriptions
-
 LLAMA_API_KEY=your_llama_api_key
-LLAMA_URL=https://...
 ```
 
 3. Start:
