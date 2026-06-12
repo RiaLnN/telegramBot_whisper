@@ -31,6 +31,9 @@ MSG_PROCESSING_SUMMARY = "Extracting key points..."
 MSG_PROCESSING_ANSWER = "Creating answer..."
 MSG_ERROR_SUMMARY = "Text cannot be summarized."
 MSG_ERROR_ANSWER = "Text cannot be answered."
+MSG_PROCESSING_VOICE = "Transcribing voice message..."
+MSG_ERROR_VOICE = "Internal systems error. Please try again later."
+ERROR_UNEXPECTED = "An unexpected error occurred while processing the request."
 
 from enum import Enum
 class AITask(Enum):

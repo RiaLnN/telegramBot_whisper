@@ -1,4 +1,4 @@
-# telegramBot_whisper
+# TelegramBot_Whisper
 
 Telegram bot for:
 - voice message transcription (Groq Whisper)
