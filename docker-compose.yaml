@@ -6,6 +6,7 @@ services:
     restart: always
     dns:
       - 8.8.8.8
+      - 1.1.1.1
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
       GROQ_API_KEY: ${GROQ_API_KEY}
@@ -20,7 +21,7 @@ services:
   celery:
       build:
         context: .
-        dockerfile: bot/Dockerfile
+        dockerfile: bot/Dockerfile 
       command: ["celery", "-A", "bot.tasks", "worker", "--loglevel=INFO", "-P", "solo"]
       environment:
         BOT_TOKEN: ${BOT_TOKEN}
