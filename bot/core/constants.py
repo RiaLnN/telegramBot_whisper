@@ -54,4 +54,5 @@ ERROR_EMPTY_AI_RESPONSE = "AI model returned an empty response."
 ERROR_TELEGRAM_API = "An error occurred while formatting or sending the AI response."
 ERROR_TEXT_RENDER = "Error rendering output text."
 
+# limits
 MAX_MESSAGE_LENGTH = 4096
