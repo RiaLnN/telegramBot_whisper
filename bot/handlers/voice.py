@@ -7,12 +7,14 @@ import logging
 
 router = Router()
 
-@router.message(F.voice)
+@router.message(F.voice | F.video_note)
 async def voice_handle(message: Message, bot: Bot):
-    if not message.voice:
+    media_obj = message.voice or message.audio or message.video_note
+
+    if not media_obj:
         return
 
-    file_id = message.voice.file_id
+    file_id = media_obj.file_id
     status_msg = await message.answer(MSG_PROCESSING_VOICE)
 
     try:
