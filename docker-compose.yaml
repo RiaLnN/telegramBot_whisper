@@ -9,7 +9,7 @@ services:
       - 1.1.1.1
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
-      GROQ_API_KEY: ${GROQ_API_KEY}
+      GROQ_KEYS: ${GROQ_KEYS}
       LLAMA_API_KEY: ${LLAMA_API_KEY}
     volumes:
       - shared-voices:/voices
@@ -25,7 +25,7 @@ services:
       command: ["celery", "-A", "bot.tasks", "worker", "--loglevel=INFO", "-P", "solo"]
       environment:
         BOT_TOKEN: ${BOT_TOKEN}
-        GROQ_API_KEY: ${GROQ_API_KEY}
+        GROQ_KEYS: ${GROQ_KEYS}
         LLAMA_API_KEY: ${LLAMA_API_KEY}
       volumes:
         - shared-voices:/voices

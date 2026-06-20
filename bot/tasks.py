@@ -14,6 +14,8 @@ from bot.core.exceptions import BotBaseException
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 
+logger = logging.getLogger(__name__)
+
 @app.task
 def process_voice_task(file_path: str, chat_id: int, message_id: int):
     bot = Bot(token=settings.BOT_TOKEN)
@@ -33,7 +35,7 @@ def process_voice_task(file_path: str, chat_id: int, message_id: int):
             )
 
         except BotBaseException as e:
-            logging.warning(f"Business logic error in voice task: {e}")
+            logger.warning(f"Business logic error in voice task [Chat: {chat_id}]: {e}")
             try:
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=message_id, text=str(e)
@@ -42,7 +44,7 @@ def process_voice_task(file_path: str, chat_id: int, message_id: int):
                 pass
 
         except TelegramAPIError as e:
-            logging.error(f"Telegram API Error in voice task: {e}")
+            logger.error(f"Telegram API Error in voice task [Chat: {chat_id}]: {e}")
             try:
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=message_id, text=ERROR_TELEGRAM_API
@@ -51,7 +53,7 @@ def process_voice_task(file_path: str, chat_id: int, message_id: int):
                 pass
 
         except Exception as e:
-            logging.exception(f"Unexpected error in voice task: {e}")
+            logger.exception(f"Unexpected crash in voice task [Chat: {chat_id}]: {e}")
             try:
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=message_id, text=ERROR_UNEXPECTED
@@ -87,7 +89,7 @@ def process_text_task(raw_text: str, chat_id: int, message_id: int, task_value: 
             )
 
         except BotBaseException as e:
-            logging.warning(f"Business logic error in text task: {e}")
+            logger.warning(f"Business logic error in text task [Chat: {chat_id}]: {e}")
             try:
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=message_id, text=str(e)
@@ -96,7 +98,7 @@ def process_text_task(raw_text: str, chat_id: int, message_id: int, task_value: 
                 pass
 
         except TelegramAPIError as e:
-            logging.error(f"Telegram API Error in text task: {e}")
+            logger.error(f"Telegram API Error in text task [Chat: {chat_id}]: {e}")
             try:
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=message_id, text=ERROR_TEXT_RENDER
@@ -105,7 +107,7 @@ def process_text_task(raw_text: str, chat_id: int, message_id: int, task_value: 
                 pass
 
         except Exception as e:
-            logging.exception(f"Unexpected error in text task: {e}")
+            logger.exception(f"Unexpected crash in text task [Chat: {chat_id}]: {e}")
             try:
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=message_id, text=ERROR_UNEXPECTED

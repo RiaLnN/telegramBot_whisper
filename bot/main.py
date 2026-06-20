@@ -1,10 +1,11 @@
 import asyncio
 from bot.loader import bot, dp
 from bot.handlers import reply, voice
-import logging
+from bot.core.logger import setup_logger
 
 async def start_bot():
-    logging.basicConfig(level=logging.INFO)
+    setup_logger()
+    
     dp.include_router(router=voice.router)
     dp.include_router(router=reply.router)
 

@@ -1,8 +1,8 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from bot.core.groq_manager import GroqKeyManager
 class BotSettings(BaseSettings):
     BOT_TOKEN: str = ''
-    GROQ_API_KEY: str = ''
+    GROQ_KEYS: str = ''
     LLAMA_API_KEY: str = ''
 
     model_config = SettingsConfigDict(
@@ -11,3 +11,4 @@ class BotSettings(BaseSettings):
     )
 
 settings = BotSettings()
+groq_key_manager = GroqKeyManager(keys_string=settings.GROQ_KEYS, ban_duration=60)

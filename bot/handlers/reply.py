@@ -9,6 +9,8 @@ from bot.core.constants import AITask
 from bot.tasks import process_text_task
 import logging
 
+logger = logging.getLogger(__name__)
+
 router = Router()
 
 @router.message(F.text, F.reply_to_message)
@@ -39,5 +41,5 @@ async def commands_handle(message: Message):
             task_value = task.value
         )
     except Exception as e:
-        logging.error(f"Broker error: {e}")
-        await status_msg.edit_text("Internal systems error. Please try again later.")
+        logger.error(f"Failed to delay text task via broker: {e}")
+        await status_msg.edit_text(err_text)

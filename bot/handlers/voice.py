@@ -5,6 +5,8 @@ from bot.tasks import process_voice_task
 from bot.core.constants import MSG_PROCESSING_VOICE, MSG_ERROR_VOICE
 import logging
 
+logger = logging.getLogger(__name__)
+
 router = Router()
 
 @router.message(F.voice | F.video_note)
@@ -31,8 +33,9 @@ async def voice_handle(message: Message, bot: Bot):
                 message_id=status_msg.message_id
             )
         else:
+            logger.warning(f"Telegram API returned empty file path for file_id: {file_id}")
             await status_msg.edit_text("Failed to get audio file path.")
             
     except Exception as e:
-        logging.error(f"Voice handler error: {e}")
+        logger.error(f"Voice handler generic failure: {e}")
         await status_msg.edit_text(MSG_ERROR_VOICE)
