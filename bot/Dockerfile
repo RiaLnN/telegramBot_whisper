@@ -1,11 +1,14 @@
-FROM python:3-slim
+FROM python:3.11-slim
 
-WORKDIR /
+WORKDIR /app
+
 COPY bot/requirements.txt ./bot/
 RUN pip install --no-cache-dir -r ./bot/requirements.txt
 
-COPY bot/ ./bot/
-ENV PYTHONPATH="/"
-EXPOSE 80
+COPY . .
 
-CMD ["python", "-m", "bot.main"]
+RUN chmod +x bot/entrypoint.sh
+
+ENV PYTHONPATH="/app"
+
+CMD ["./bot/entrypoint.sh"]

@@ -1,4 +1,35 @@
+version: '3.8'
+
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: bot_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: bot_user
+      POSTGRES_PASSWORD: bot_password
+      POSTGRES_DB: bot_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bot_user -d bot_db"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+      start_period: 2s
+  redis:
+    image: redis:alpine
+    container_name: bot_redis
+    ports:
+      - "6379:6379"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
   bot:
     build:
       context: .
@@ -11,29 +42,43 @@ services:
       BOT_TOKEN: ${BOT_TOKEN}
       GROQ_KEYS: ${GROQ_KEYS}
       LLAMA_API_KEY: ${LLAMA_API_KEY}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: bot_user
+      DB_PASS: bot_password
+      DB_NAME: bot_db
     volumes:
       - shared-voices:/voices
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
   celery:
-      build:
-        context: .
-        dockerfile: bot/Dockerfile 
-      command: ["celery", "-A", "bot.tasks", "worker", "--loglevel=INFO", "-P", "solo"]
-      environment:
-        BOT_TOKEN: ${BOT_TOKEN}
-        GROQ_KEYS: ${GROQ_KEYS}
-        LLAMA_API_KEY: ${LLAMA_API_KEY}
-      volumes:
-        - shared-voices:/voices
-      depends_on:
-        - redis
-        - bot
-      restart: always
-
+    build:
+      context: .
+      dockerfile: bot/Dockerfile 
+    command: ["celery", "-A", "bot.tasks", "worker", "--loglevel=INFO", "-P", "solo"]
+    restart: always
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      GROQ_KEYS: ${GROQ_KEYS}
+      LLAMA_API_KEY: ${LLAMA_API_KEY}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: bot_user
+      DB_PASS: bot_password
+      DB_NAME: bot_db
+    volumes:
+      - shared-voices:/voices
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      bot:
+        condition: service_started
 
 volumes:
   shared-voices:
+  pgdata:

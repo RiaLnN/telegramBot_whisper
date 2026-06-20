@@ -1,9 +1,12 @@
 import os
 
 def get_destination_path(file_id: str):
-    if not os.path.exists('voices'):
-        os.mkdir("voices")
-    return f"voices/{file_id}.ogg"
+    base_dir = "/voices"
+    
+    if not os.path.exists(base_dir):
+        os.mkdir(base_dir)
+        
+    return f"{base_dir}/{file_id}.ogg"
 
 def get_payload_for_ai(system_prompt: str, user_text: str):
     return {

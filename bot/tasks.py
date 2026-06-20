@@ -70,13 +70,13 @@ def process_voice_task(file_path: str, chat_id: int, message_id: int):
 
 
 @app.task
-def process_text_task(raw_text: str, chat_id: int, message_id: int, task_value: str):
+def process_text_task(raw_text: str, chat_id: int, message_id: int, task_name: str, preset: str):
     bot = Bot(token=settings.BOT_TOKEN)
-    task = AITask(task_value)
+    task = AITask[task_name]
     
     async def run_logic():
         try:
-            text = await get_ai_answer(raw_text=raw_text, task=task)
+            text = await get_ai_answer(raw_text=raw_text, task=task, preset_key=preset)
 
             if not text or not text.strip():
                 text = ERROR_EMPTY_AI_RESPONSE

@@ -1,6 +1,6 @@
 import httpx
 import logging
-from bot.core.config import groq_key_manager
+from bot.core.groq_manager import groq_key_manager
 from bot.core.constants import GROQ_AUDIO_URL
 from bot.core.exceptions import NetworkException, BadResponseException, LLMException
 from bot.helpers import get_header_for_ai

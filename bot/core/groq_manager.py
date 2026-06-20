@@ -3,6 +3,7 @@ import logging
 from collections import deque
 from threading import Lock
 from typing import Optional
+from bot.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +51,6 @@ class GroqKeyManager:
                 
             self._banned_keys[key] = time.time() + self._ban_duration
             logger.warning(f"Ключ ...{key[-6:]} забанен на {self._ban_duration}с из-за Rate Limit.")
+
+
+groq_key_manager = GroqKeyManager(keys_string=settings.GROQ_KEYS, ban_duration=60)
