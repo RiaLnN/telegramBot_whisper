@@ -12,7 +12,7 @@ class GroqKeyManager:
         raw_keys = [k.strip() for k in keys_string.split(",") if k.strip()]
         
         if not raw_keys:
-            raise ValueError("Список API ключей Groq пуст! Проверь .env файл.")
+            raise ValueError("Groq's API key list is empty! Check your .env file.")
 
         self._active_keys = deque(raw_keys)
         self._banned_keys = {}
@@ -30,14 +30,14 @@ class GroqKeyManager:
                 
         if released_keys:
             self._active_keys.extend(released_keys)
-            logger.info(f"Срок бана истек. Восстановлено ключей: {len(released_keys)}")
+            logger.info(f"The ban has expired. Keys have been restored: {len(released_keys)}")
 
     def get_key(self) -> Optional[str]:
         with self._lock:
             self._refresh_banned_keys()
 
             if not self._active_keys:
-                logger.error("Все API ключи Groq заблокированы по Rate Limit!")
+                logger.error("All Groq API keys are blocked due to Rate Limit!")
                 return None
 
             current_key = self._active_keys[0]
@@ -50,7 +50,7 @@ class GroqKeyManager:
                 self._active_keys.remove(key)
                 
             self._banned_keys[key] = time.time() + self._ban_duration
-            logger.warning(f"Ключ ...{key[-6:]} забанен на {self._ban_duration}с из-за Rate Limit.")
+            logger.warning(f"Key ...{key[-6:]} banned on {self._ban_duration}due to Rate Limit.")
 
 
 groq_key_manager = GroqKeyManager(keys_string=settings.GROQ_KEYS, ban_duration=60)
