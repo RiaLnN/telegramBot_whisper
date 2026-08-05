@@ -1,9 +1,15 @@
+from typing import Optional
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
 class BotSettings(BaseSettings):
     BOT_TOKEN: str = ''
     GROQ_KEYS: str = ''
     LLAMA_API_KEY: str = ''
-    
+
+    DATABASE_URL: Optional[str] = None
+
     DB_HOST: str = 'localhost'
     DB_PORT: int = 5432
     DB_USER: str = 'bot_user'
@@ -18,6 +24,18 @@ class BotSettings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        if self.DATABASE_URL:
+            url = self.DATABASE_URL
+            if url.startswith("postgres://"):
+                url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+            elif url.startswith("postgresql://") and not url.startswith("postgresql+asyncpg://"):
+                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            return url
+
+        return (
+            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
+
 
 settings = BotSettings()
