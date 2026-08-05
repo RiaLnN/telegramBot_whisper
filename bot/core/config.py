@@ -37,5 +37,15 @@ class BotSettings(BaseSettings):
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
 
+    REDIS_URL: Optional[str] = None
+    REDIS_HOST: str = 'localhost'
+    REDIS_PORT: int = 6379
+
+    @property
+    def redis_dsn(self) -> str:
+        if self.REDIS_URL:
+            return self.REDIS_URL
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/0"
+
 
 settings = BotSettings()

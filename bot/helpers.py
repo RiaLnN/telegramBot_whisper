@@ -1,12 +1,11 @@
-import os
+import tempfile
+from pathlib import Path
 
-def get_destination_path(file_id: str):
-    base_dir = "/voices"
-    
-    if not os.path.exists(base_dir):
-        os.mkdir(base_dir)
-        
-    return f"{base_dir}/{file_id}.ogg"
+def get_destination_path(file_id: str) -> str:
+    temp_dir = tempfile.gettempdir()
+    voices_dir = Path(temp_dir) / "voices"
+    voices_dir.mkdir(parents=True, exist_ok=True)
+    return str(voices_dir / f"{file_id}.ogg")
 
 def get_payload_for_ai(system_prompt: str, user_text: str):
     return {
