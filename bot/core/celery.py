@@ -2,7 +2,7 @@ from celery import Celery
 from bot.core.config import settings
 
 app = Celery(
-    "whisper_bot",
+    "llm_call",
     broker=settings.redis_dsn,
     backend=settings.redis_dsn,
     include=["bot.tasks"]
