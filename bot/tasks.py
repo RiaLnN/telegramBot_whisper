@@ -13,16 +13,25 @@ from bot.core.config import settings
 from bot.core.exceptions import BotBaseException
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
+from bot.helpers import get_destination_path
 
 logger = logging.getLogger(__name__)
 
 @app.task
-def process_voice_task(file_path: str, chat_id: int, message_id: int):
+def process_voice_task(file_id: str, chat_id: int, message_id: int):
     bot = Bot(token=settings.BOT_TOKEN)
 
     async def run_logic():
+        local_path = get_destination_path(file_id)
+
         try:
-            text = await get_voice_text(file_path=file_path)
+            file_info = await bot.get_file(file_id)
+            if not file_info.file_path:
+                raise Exception(f"Telegram API returned empty file_path for file_id: {file_id}")
+
+            await bot.download_file(file_info.file_path, local_path)
+
+            text = await get_voice_text(file_path=local_path)
 
             if not text or not text.strip():
                 text = ERROR_EMPTY_AUDIO
@@ -62,12 +71,13 @@ def process_voice_task(file_path: str, chat_id: int, message_id: int):
                 pass
 
         finally:
+            # Закрываем сессию бота
             await bot.session.close()
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            # Гарантированно удаляем временный файл из контейнера Celery
+            if os.path.exists(local_path):
+                os.remove(local_path)
 
     asyncio.run(run_logic())
-
 
 @app.task
 def process_text_task(raw_text: str, chat_id: int, message_id: int, task_name: str, preset: str):

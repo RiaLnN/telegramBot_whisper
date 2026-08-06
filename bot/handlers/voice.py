@@ -15,24 +15,13 @@ async def _run_transcription(media_obj, message: Message, bot: Bot):
     status_msg = await message.answer(MSG_PROCESSING_VOICE)
 
     try:
-        file_info = await bot.get_file(file_id)
-        file_path = file_info.file_path
-
-        if file_path:
-            local_path = get_destination_path(file_id)
-            await bot.download_file(file_path, local_path)
-
-            process_voice_task.delay(
-                file_path=local_path,
-                chat_id=message.chat.id,
-                message_id=status_msg.message_id
-            )
-        else:
-            logger.warning(f"Telegram API returned empty file path for file_id: {file_id}")
-            await status_msg.edit_text("Failed to get audio file path.")
-
+        process_voice_task.delay(
+            file_id=file_id,
+            chat_id=message.chat.id,
+            message_id=status_msg.message_id
+        )
     except Exception as e:
-        logger.error(f"Voice handler error: {e}")
+        logger.error(f"Failed to queue voice task: {e}")
         await status_msg.edit_text(MSG_ERROR_VOICE)
 
 
