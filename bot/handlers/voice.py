@@ -5,6 +5,7 @@ from bot.tasks import process_voice_task
 from bot.core.constants import MSG_PROCESSING_VOICE, MSG_ERROR_VOICE, TRANSCRIBE_COMMANDS
 from bot.service.settings import get_or_create_settings
 import logging
+from bot.core.filters import HasAudioOrVideoFilter
 
 logger = logging.getLogger(__name__)
 router = Router()
@@ -25,7 +26,7 @@ async def _run_transcription(media_obj, message: Message, bot: Bot):
         await status_msg.edit_text(MSG_ERROR_VOICE)
 
 
-@router.message(F.voice | F.video_note)
+@router.message(HasAudioOrVideoFilter())
 async def voice_handle(message: Message, bot: Bot):
     settings = await get_or_create_settings(message.chat.id)
 
@@ -38,8 +39,7 @@ async def voice_handle(message: Message, bot: Bot):
 
     await _run_transcription(media_obj, message, bot)
 
-
-@router.message(F.text, F.reply_to_message.voice | F.reply_to_message.video_note)
+@router.message(F.text, HasAudioOrVideoFilter(check_reply=True))
 async def voice_command_handle(message: Message, bot: Bot):
     if not message.text or not message.reply_to_message:
         return
