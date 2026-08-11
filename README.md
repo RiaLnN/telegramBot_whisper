@@ -2,7 +2,7 @@
 
 Telegram bot for voice transcription and AI text processing.
 
-![](https://github.com/RiaLnN/telegramBot_whisper/whisper_work_celery.gif)
+![Demonstation](whisper_work_celery.gif)
 
 The bot can:
 - transcribe voice messages and video notes,
